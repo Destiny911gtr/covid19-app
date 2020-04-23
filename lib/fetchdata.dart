@@ -1,17 +1,24 @@
+import 'package:covid19info/colors.dart';
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'package:flutter_icons/flutter_icons.dart' as mdicons;
 import 'statewise.dart';
+import 'settings.dart';
 import 'main.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 // ignore: missing_return
-Future<String> getData() async {
-  sleep(Duration(milliseconds: 250));
+Future<List<Map>> getData() async {
+  //sleep(Duration(milliseconds: 250));
+
+  dynamic name;
   var stateResponse;
   var distResponse;
+  Map tempStateMap = {};
+  Map tempDistMap = {};
+  List<Map> returnData = [{}, {}];
 
   try {
     stateResponse = await http.get(
@@ -28,46 +35,46 @@ Future<String> getData() async {
 
   if (stateResponse != null) {
     if (stateResponse.statusCode == 200) {
-      isOpaque();
       dynamic convertStateDataJson = json.decode(stateResponse.body);
       stateName = convertStateDataJson['statewise'];
       var lengthOf = stateName.length;
       for (var i = 0; i < lengthOf; i++) {
         if (stateName[i]["state"] == state) {
-          stateMap = stateName[i];
-          stateId = i;
+          tempStateMap = stateName[i];
           break;
         }
       }
-      if (stateMap["state"] != 'Total') {
+      if (tempStateMap["state"] != 'Total') {
         dynamic convertDataJson = json.decode(distResponse.body);
         try {
           name = convertDataJson[state]['districtData'];
-          distNotAvail = false;
+          distAvail = true;
           buttonData('district', true);
         } catch (e) {
           noDistDataSnackbar();
         }
-        distMap = {};
+        tempDistMap = {};
         try {
           name.forEach(
             (k, v) {
               var j = v['confirmed'];
-              distMap[k] = j;
+              tempDistMap[k] = j;
             },
           );
         } catch (e) {
-          Null;
+          NullThrownError();
         }
-      } else if (stateMap["state"] == 'Total') {
+      } else if (tempStateMap["state"] == 'Total') {
         noDistDataSnackbar();
-        distMap[0] = 'None';
+        tempDistMap[0] = 'None';
       } else {
-        distMap[0] = 'None';
+        tempDistMap[0] = 'None';
       }
-      isOpaque();
     }
   }
+  returnData[0] = tempStateMap;
+  returnData[1] = tempDistMap;
+  return returnData;
 }
 
 void noNetSnackbar() {
@@ -102,7 +109,7 @@ void noNetSnackbar() {
         label: 'Reload',
         onPressed: () {
           netAvail = true;
-          // TODO: Some code to undo the change.
+          reloadApp();
         },
       ),
     ),
@@ -110,7 +117,7 @@ void noNetSnackbar() {
 }
 
 void noDistDataSnackbar() {
-  distNotAvail = true;
+  distAvail = false;
   buttonData('district', false);
   scaffolkey.currentState.showSnackBar(
     SnackBar(
@@ -120,7 +127,7 @@ void noDistDataSnackbar() {
         height: 50,
         child: Card(
           elevation: 0,
-          color: fontColor,
+          color: primaryColor,
           child: Row(
             children: <Widget>[
               Padding(
@@ -128,13 +135,13 @@ void noDistDataSnackbar() {
                 child: Icon(
                   mdicons.MaterialIcons.info_outline,
                   size: 20,
-                  color: fontColor.shade50,
+                  color: secondaryColor,
                 ),
               ),
               Text(
                 'District data unavailable',
                 textAlign: TextAlign.start,
-                style: TextStyle(color: fontColor.shade50),
+                style: TextStyle(color: secondaryColor),
               ),
             ],
           ),

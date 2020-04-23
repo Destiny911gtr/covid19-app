@@ -1,8 +1,14 @@
+import 'package:covid19info/statewise.dart';
+import 'package:flutter_color_models/flutter_color_models.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_icons/flutter_icons.dart' as mdicons;
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:covid19info/main.dart';
 import 'package:flutter/material.dart';
+import 'colors.dart';
+import 'districts.dart';
+import 'main.dart';
 
 class MultiSelectChip extends StatefulWidget {
   final List<String> reportList;
@@ -20,19 +26,19 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
       choices.add(Container(
         padding: const EdgeInsets.all(2.0),
         child: ChoiceChip(
-          backgroundColor: fontColor.shade300,
-          selectedColor: fontColor,
+          backgroundColor: thirdColor,
+          selectedColor: primaryColor,
           shadowColor: Colors.transparent,
           selectedShadowColor: Colors.transparent,
           label: Text(
             item,
-            style: TextStyle(color: fontColor.shade50),
+            style: TextStyle(color: secondaryColor),
           ),
-          selected: selectedChoice == item,
+          selected: state == item,
           onSelected: (selected) {
             setState(() {
-              selectedChoice = item;
-              widget.onSelectionChanged(selectedChoice);
+              state = item;
+              //widget.onSelectionChanged(state);
             });
           },
         ),
@@ -51,7 +57,6 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
 }
 
 Widget appInfoDialog(BuildContext context) {
-  final RenderBox box = context.findRenderObject();
   return Card(
     color: fontColor.shade50,
     elevation: 0,
@@ -285,7 +290,8 @@ Widget appInfoDialog(BuildContext context) {
                     mdicons.MaterialCommunityIcons.github_circle,
                     color: Color.fromARGB(255, 58, 49, 51),
                   ),
-                  onPressed: () => _launchURL('https://github.com/covid19india'),
+                  onPressed: () =>
+                      _launchURL('https://github.com/covid19india'),
                 ),
               ),
             ),
@@ -325,10 +331,45 @@ Widget appInfoDialog(BuildContext context) {
   );
 }
 
+class ThemePicker extends StatefulWidget {
+  ThemePicker({Key key}) : super(key: key);
+
+  @override
+  _ThemePickerState createState() => _ThemePickerState();
+}
+
+class _ThemePickerState extends State<ThemePicker> {
+  @override
+  Widget build(BuildContext context) {
+    void changeColor(Color color) => setState(
+          () {
+            customColor = color;
+            primaryColor = colorConv(43);
+            secondaryColor = colorConv(80);
+            thirdColor = colorConv(65);
+            setStoredPrefs(customColor.value, null);
+            reloadApp();
+          },
+        );
+    return BlockPicker(
+      pickerColor: customColor,
+      onColorChanged: changeColor,
+    );
+  }
+}
+
 _launchURL(String url) async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
     throw 'Could not launch $url';
   }
+}
+
+void reloadApp() {
+  runApp(
+    new MaterialApp(
+      home: new StateWise(),
+    ),
+  );
 }

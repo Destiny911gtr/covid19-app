@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'statewise.dart';
+import 'colors.dart';
 import 'main.dart';
 
 class DistWise extends StatefulWidget {
@@ -21,17 +22,18 @@ class _DistWiseState extends State<DistWise> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: fontColor.shade50,
+        systemNavigationBarColor: secondaryColor,
         systemNavigationBarIconBrightness: Brightness.light));
+    print(distMap);
     return Scaffold(
-      backgroundColor: fontColor.shade50,
+      backgroundColor: secondaryColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: fontColor.shade50),
+        iconTheme: IconThemeData(color: primaryColor),
         title: Text(
           'Regional Confirmation Data',
-          style: TextStyle(color: fontColor.shade50),
+          style: TextStyle(color: secondaryColor),
         ),
-        backgroundColor: fontColor,
+        backgroundColor: primaryColor,
         centerTitle: true,
       ),
       body: Stack(
@@ -46,7 +48,7 @@ class _DistWiseState extends State<DistWise> {
                   shape: BeveledRectangleBorder(
                     borderRadius: BorderRadius.circular(0.0),
                   ),
-                  color: fontColor.shade200,
+                  color: thirdColor,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5, bottom: 5),
                     child: Text(
@@ -54,7 +56,7 @@ class _DistWiseState extends State<DistWise> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontStyle: FontStyle.italic,
-                          color: fontColor,
+                          color: primaryColor,
                           fontSize: 17),
                     ),
                   ),
@@ -80,7 +82,7 @@ class _DistWiseState extends State<DistWise> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
-                      color: fontColor,
+                      color: primaryColor,
                       child: ListTile(
                         title: Container(
                           width: 30,
@@ -91,14 +93,13 @@ class _DistWiseState extends State<DistWise> {
                             child: Text(
                               '$key',
                               style: TextStyle(
-                                  color: fontColor.shade50, fontSize: 20),
+                                  color: secondaryColor, fontSize: 20),
                             ),
                           ),
                         ),
                         subtitle: Text(
                           '${distMap[key]}',
-                          style: TextStyle(
-                              color: fontColor.shade100, fontSize: 15),
+                          style: TextStyle(color: thirdColor, fontSize: 15),
                         ),
                       ),
                     ),

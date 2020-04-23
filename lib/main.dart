@@ -4,10 +4,30 @@ import 'package:random_color/random_color.dart' as randc;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'statewise.dart';
 
-MaterialColor fontColor = randc.RandomColor().randomMaterialColor(
+void setStoredPrefs(int color, String state) async {
+  SharedPreferences prefState = await SharedPreferences.getInstance();
+  if (color == null) {
+  prefState.setString('state', state);
+  } else if (state == null) {
+  prefState.setInt('color', color);
+  }
+}
+
+void getStoredPrefs() async {
+  SharedPreferences prefState = await SharedPreferences.getInstance();
+  state = prefState.getString('state') == null
+      ? 'Total'
+      : prefState.getString('state');
+  customColor = Color(prefState.getInt('color'));
+}
+
+dynamic fontColor = randc.RandomColor().randomMaterialColor(
   colorSaturation: randc.ColorSaturation.lowSaturation,
   colorHue: randc.ColorHue.random,
 );
+
+Color customColor = Color(0xff607d8b);
+
 List<String> items = [
   'Andhra Pradesh',
   'Arunachal Pradesh',
@@ -49,18 +69,8 @@ List<String> items = [
   'Total'
 ];
 
-void setStatePref(String state) async {
-  SharedPreferences prefState = await SharedPreferences.getInstance();
-  prefState.setString('state', state);
-}
-
-void getStatePref() async {
-  SharedPreferences prefState = await SharedPreferences.getInstance();
-  state = prefState.getString('state') == null ? 'Kerala' : prefState.getString('state');
-}
-
 void main() => runApp(
       new MaterialApp(
         home: new StateWise(),
-      ),
-    );
+        ),
+      );
