@@ -1,3 +1,4 @@
+import 'package:covid19info/UI.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:random_color/random_color.dart' as randc;
@@ -61,6 +62,6 @@ void getStatePref() async {
 
 void main() => runApp(
       new MaterialApp(
-        home: new StateWise(),
+        home: new MainUI(),
       ),
     );

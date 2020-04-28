@@ -8,10 +8,13 @@ import 'dart:convert';
 import 'dart:io';
 
 // ignore: missing_return
-Future<String> getData() async {
+Future<List> getData() async {
   sleep(Duration(milliseconds: 250));
   var stateResponse;
   var distResponse;
+  List tempStateMap = [];
+  Map tempDistMap = {};
+  List returnData = [[], [], []];
 
   try {
     stateResponse = await http.get(
@@ -23,123 +26,107 @@ Future<String> getData() async {
       headers: {'Accept': 'application/json'},
     );
   } catch (e) {
-    noNetSnackbar();
+    //noNetSnackbar();
   }
 
   if (stateResponse != null) {
     if (stateResponse.statusCode == 200) {
-      isOpaque();
       dynamic convertStateDataJson = json.decode(stateResponse.body);
-      stateName = convertStateDataJson['statewise'];
-      var lengthOf = stateName.length;
-      for (var i = 0; i < lengthOf; i++) {
-        if (stateName[i]["state"] == state) {
-          stateMap = stateName[i];
-          stateId = i;
-          break;
-        }
-      }
+      tempStateMap = convertStateDataJson['statewise'];
       if (stateMap["state"] != 'Total') {
-        dynamic convertDataJson = json.decode(distResponse.body);
-        try {
-          name = convertDataJson[state]['districtData'];
+        dynamic convertDistDataJson = json.decode(distResponse.body);
+        //try {
+          tempDistMap = convertDistDataJson;
           distNotAvail = false;
           buttonData('district', true);
-        } catch (e) {
-          noDistDataSnackbar();
-        }
-        distMap = {};
-        try {
-          name.forEach(
-            (k, v) {
-              var j = v['confirmed'];
-              distMap[k] = j;
-            },
-          );
-        } catch (e) {
-          Null;
-        }
+        // } catch (e) {
+        //   //noDistDataSnackbar();
+        // }
       } else if (stateMap["state"] == 'Total') {
-        noDistDataSnackbar();
-        distMap[0] = 'None';
+        //noDistDataSnackbar();
+        tempDistMap[0] = 'None';
       } else {
-        distMap[0] = 'None';
+        tempDistMap[0] = 'None';
       }
-      isOpaque();
     }
   }
+  returnData[0] = tempStateMap;
+  returnData[1] = [tempDistMap];
+  returnData[2] = tempStateMap[0];
+  //print(fontColor.toString());
+  return returnData;
 }
 
-void noNetSnackbar() {
-  netAvail = false;
-  scaffolkey.currentState.showSnackBar(
-    SnackBar(
-      duration: Duration(seconds: 20),
-      elevation: 0,
-      backgroundColor: fontColor,
-      content: Container(
-        height: 20,
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-              child: Icon(
-                mdicons.MaterialCommunityIcons.network_strength_off_outline,
-                size: 20,
-                color: fontColor.shade50,
-              ),
-            ),
-            Text(
-              'Network unavailable',
-              textAlign: TextAlign.start,
-              style: TextStyle(color: fontColor.shade50),
-            ),
-          ],
-        ),
-      ),
-      action: SnackBarAction(
-        textColor: fontColor.shade100,
-        label: 'Reload',
-        onPressed: () {
-          netAvail = true;
-          // TODO: Some code to undo the change.
-        },
-      ),
-    ),
-  );
-}
+// void noNetSnackbar() {
+//   netAvail = false;
+//   scaffolkey.currentState.showSnackBar(
+//     SnackBar(
+//       duration: Duration(seconds: 20),
+//       elevation: 0,
+//       backgroundColor: fontColor,
+//       content: Container(
+//         height: 20,
+//         child: Row(
+//           children: <Widget>[
+//             Padding(
+//               padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+//               child: Icon(
+//                 mdicons.MaterialCommunityIcons.network_strength_off_outline,
+//                 size: 20,
+//                 color: fontColor.shade50,
+//               ),
+//             ),
+//             Text(
+//               'Network unavailable',
+//               textAlign: TextAlign.start,
+//               style: TextStyle(color: fontColor.shade50),
+//             ),
+//           ],
+//         ),
+//       ),
+//       action: SnackBarAction(
+//         textColor: fontColor.shade100,
+//         label: 'Reload',
+//         onPressed: () {
+//           netAvail = true;
+//           // TODO: Some code to undo the change.
+//         },
+//       ),
+//     ),
+//   );
+// }
 
-void noDistDataSnackbar() {
-  distNotAvail = true;
-  buttonData('district', false);
-  scaffolkey.currentState.showSnackBar(
-    SnackBar(
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      content: Container(
-        height: 50,
-        child: Card(
-          elevation: 0,
-          color: fontColor,
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                child: Icon(
-                  mdicons.MaterialIcons.info_outline,
-                  size: 20,
-                  color: fontColor.shade50,
-                ),
-              ),
-              Text(
-                'District data unavailable',
-                textAlign: TextAlign.start,
-                style: TextStyle(color: fontColor.shade50),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
+// void noDistDataSnackbar() {
+//   distNotAvail = true;
+//   buttonData('district', false);
+//   scaffolkey.currentState.showSnackBar(
+//     SnackBar(
+//       elevation: 0,
+//       backgroundColor: Colors.transparent,
+//       content: Container(
+//         height: 50,
+//         child: Card(
+//           elevation: 0,
+//           color: fontColor,
+//           child: Row(
+//             children: <Widget>[
+//               Padding(
+//                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+//                 child: Icon(
+//                   mdicons.MaterialIcons.info_outline,
+//                   size: 20,
+//                   color: fontColor.shade50,
+//                 ),
+//               ),
+//               Text(
+//                 'District data unavailable',
+//                 textAlign: TextAlign.start,
+//                 style: TextStyle(color: fontColor.shade50),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }
