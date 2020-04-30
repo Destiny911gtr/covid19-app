@@ -53,7 +53,7 @@ Future<List> getData() async {
   returnData[0] = tempStateMap;
   returnData[1] = [tempDistMap];
   returnData[2] = tempStateMap[0];
-  //print(fontColor.toString());
+  //print(returnData[0].toString());
   return returnData;
 }
 
