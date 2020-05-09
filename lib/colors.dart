@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_color_models/flutter_color_models.dart';
 
 //Color customColor = Color(0xffad8067);
-Color customColor = Color(0x607d8b);
+Color customColor = Color(0x424242);
+Color confirmedInfo = Color(0xEB3D3F);
+Color activeInfo = Color(0x3878F9);
+Color recoveredInfo = Color(0x51A44F);
+Color deceasedInfo = Color(0x6F767D);
 
-bool darkMode = true;
+bool darkMode = false;
 
 Color primaryColor = colorConv(50);
 Color secondaryColor = colorConv(65);
@@ -34,6 +38,15 @@ Color setColor({@required String color, int alpha}) {
 
 Color colorConv(double lightness) {
   HslColor hsl = HslColor.fromColor(customColor);
+  double h = double.parse(hsl.toString().split("(")[1].split(",")[0]);
+  double s = double.parse(hsl.toString().split(",")[1]);
+  HslColor hslColor = HslColor.fromList(<num>[h, s, lightness]);
+  Color retColor = hslColor.toColor();
+  return retColor;
+}
+
+Color extraColor(Color color, double lightness) {
+  HslColor hsl = HslColor.fromColor(color);
   double h = double.parse(hsl.toString().split("(")[1].split(",")[0]);
   double s = double.parse(hsl.toString().split(",")[1]);
   HslColor hslColor = HslColor.fromList(<num>[h, s, lightness]);

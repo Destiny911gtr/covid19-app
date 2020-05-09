@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:random_color/random_color.dart' as randc;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'statewise.dart';
+
+String homeScrState = 'Total';
 
 MaterialColor fontColor = randc.RandomColor().randomMaterialColor(
   colorSaturation: randc.ColorSaturation.lowSaturation,
@@ -50,14 +51,14 @@ List<String> items = [
   'Total'
 ];
 
-void setStatePref(String state) async {
+void setStoredPref(String data) async {
   SharedPreferences prefState = await SharedPreferences.getInstance();
-  prefState.setString('state', state);
+  prefState.setString('state', data);
 }
 
-void getStatePref() async {
+void getStoredPref() async {
   SharedPreferences prefState = await SharedPreferences.getInstance();
-  state = prefState.getString('state') == null ? 'Kerala' : prefState.getString('state');
+  homeScrState = prefState.getString('state') == null ? 'Kerala' : prefState.getString('state');
 }
 
 void main() => runApp(
